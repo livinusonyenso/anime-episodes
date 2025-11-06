@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
-
+import toast from 'react-hot-toast'
 export default function AnimeDetailPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');   // ✅ read ID from URL query
@@ -38,7 +38,7 @@ export default function AnimeDetailPage() {
   }, [id, user]);
 
   const toggleWatched = async (episodeId, checked) => {
-    if (!user) return alert('Please login first.');
+    if (!user) return toast.error("Please login first");
     try {
       setBusyId(episodeId);
       await setEpisodeWatched(episodeId, checked);

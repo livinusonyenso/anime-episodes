@@ -523,9 +523,6 @@ video {
 .flex {
   display: flex;
 }
-.inline-flex {
-  display: inline-flex;
-}
 .w-full {
   width: 100%;
 }
@@ -547,11 +544,11 @@ video {
 .justify-between {
   justify-content: space-between;
 }
-.gap-2 {
-  gap: 0.5rem;
-}
 .gap-4 {
   gap: 1rem;
+}
+.gap-2 {
+  gap: 0.5rem;
 }
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
@@ -656,12 +653,6 @@ video {
 }
 .font-semibold {
   font-weight: 600;
-}
-.uppercase {
-  text-transform: uppercase;
-}
-.tracking-wide {
-  letter-spacing: 0.025em;
 }
 .text-emerald-400 {
   --tw-text-opacity: 1;
