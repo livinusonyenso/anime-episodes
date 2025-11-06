@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0b0d12;
+  --fg: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #22c55e;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+a { color: var(--accent); }
+input, button, textarea, select {
+  color: #111827;
+}
