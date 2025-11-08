@@ -1,19 +1,23 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useApp } from '../../context/AppContext';
-import toast from 'react-hot-toast'
+// app/anime/page.js
+"use client";
+export const dynamic = "force-dynamic";
+
+import { Suspense } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useApp } from "../../context/AppContext";
+import toast from "react-hot-toast";
 import { CheckCircleIcon, CircleStackIcon } from "@heroicons/react/24/solid";
 
-export default function AnimeDetailPage() {
+function AnimeDetailPage() {
   const searchParams = useSearchParams();
-  const id = searchParams.get('id');   // ✅ read ID from URL query
+  const id = searchParams.get("id");
   const { user, getEpisodes, setEpisodeWatched } = useApp();
 
   const [episodes, setEpisodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -36,10 +40,14 @@ export default function AnimeDetailPage() {
     try {
       setBusyId(episodeId);
       await setEpisodeWatched(episodeId, checked);
-      setEpisodes(prev => prev.map(ep =>
-        ep._id === episodeId ? { ...ep, __watched: checked } : ep
-      ));
-    } finally { setBusyId(null); }
+      setEpisodes((prev) =>
+        prev.map((ep) =>
+          ep._id === episodeId ? { ...ep, __watched: checked } : ep
+        )
+      );
+    } finally {
+      setBusyId(null);
+    }
   };
 
   return (
@@ -50,27 +58,36 @@ export default function AnimeDetailPage() {
       {!loading && episodes.length === 0 && <p>No episodes found.</p>}
 
       <ul className="divide-y divide-white/10 rounded border border-white/10">
-        {episodes.map(ep => (
+        {episodes.map((ep) => (
           <li key={ep._id} className="p-3 flex items-center justify-between">
             <div>
-              <div className="font-medium">EP {ep.number}: {ep.title}</div>
+              <div className="font-medium">
+                EP {ep.number}: {ep.title}
+              </div>
               <div className="text-xs text-gray-400">{ep.type}</div>
             </div>
-           <button
-  disabled={busyId === ep._id}
-  onClick={() => toggleWatched(ep._id, !ep.__watched)}
-  className="text-white"
->
-  {ep.__watched ? (
-    <CheckCircleIcon className="w-6 h-6 text-green-400 hover:scale-110 transition" />
-  ) : (
-    <CircleStackIcon className="w-6 h-6 text-gray-400 hover:text-white hover:scale-110 transition" />
-  )}
-</button>
-
+            <button
+              disabled={busyId === ep._id}
+              onClick={() => toggleWatched(ep._id, !ep.__watched)}
+              className="text-white"
+            >
+              {ep.__watched ? (
+                <CheckCircleIcon className="w-6 h-6 text-green-400 hover:scale-110 transition" />
+              ) : (
+                <CircleStackIcon className="w-6 h-6 text-gray-400 hover:text-white hover:scale-110 transition" />
+              )}
+            </button>
           </li>
         ))}
       </ul>
     </div>
+  );
+}
+
+export default function AnimePage() {
+  return (
+    <Suspense fallback={<p>Loading anime details...</p>}>
+      <AnimeDetailPage />
+    </Suspense>
   );
 }
