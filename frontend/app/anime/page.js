@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
 import toast from 'react-hot-toast'
+import { CheckCircleIcon, CircleStackIcon } from "@heroicons/react/24/solid";
+
 export default function AnimeDetailPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');   // ✅ read ID from URL query
@@ -62,12 +64,18 @@ export default function AnimeDetailPage() {
               <div className="font-medium">EP {ep.number}: {ep.title}</div>
               <div className="text-xs text-gray-400">{ep.type}</div>
             </div>
-            <input
-              type="checkbox"
-              checked={!!ep.__watched}
-              disabled={busyId === ep._id}
-              onChange={e => toggleWatched(ep._id, e.target.checked)}
-            />
+           <button
+  disabled={busyId === ep._id}
+  onClick={() => toggleWatched(ep._id, !ep.__watched)}
+  className="text-white"
+>
+  {ep.__watched ? (
+    <CheckCircleIcon className="w-6 h-6 text-green-400 hover:scale-110 transition" />
+  ) : (
+    <CircleStackIcon className="w-6 h-6 text-gray-400 hover:text-white hover:scale-110 transition" />
+  )}
+</button>
+
           </li>
         ))}
       </ul>
