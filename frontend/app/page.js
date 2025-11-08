@@ -17,7 +17,7 @@ export default function HomePage() {
     setError('');
     setResult(null);
     try {
-      const res = await searchAnime(q); // ✅ using context API
+      const res = await searchAnime(q); 
       setResult(res.data);
     } catch (err) {
       setError(err.message);
