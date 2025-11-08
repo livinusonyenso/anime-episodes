@@ -1,9 +1,14 @@
 const router = require('express').Router();
-const { searchOrCreateAnime, getEpisodes } = require('../controllers/animeController');
+const { listAllAnime, searchOrCreateAnime, getEpisodes } = require('../controllers/animeController');
 const { maybeAuth } = require('../middleware/maybeAuth');
 
-// Search + Preload Episodes
-router.get('/', searchOrCreateAnime);
+// List all anime (if no q param) or search/create (if q param provided)
+router.get('/', (req, res, next) => {
+  if (req.query.q) {
+    return searchOrCreateAnime(req, res, next);
+  }
+  return listAllAnime(req, res, next);
+});
 
 // Get Episodes (optionally include watched status)
 router.get('/:id/episodes', maybeAuth, getEpisodes);

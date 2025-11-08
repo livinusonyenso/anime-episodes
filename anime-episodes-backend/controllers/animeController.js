@@ -2,6 +2,35 @@ const Anime = require('../models/Anime');
 const Episode = require('../models/Episode');
 const { ensureAnimeCached, refreshEpisodesIfStale } = require('../services/scraper/animeScraper');
 
+// List all anime
+async function listAllAnime(req, res, next) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const skip = (page - 1) * limit;
+
+    const anime = await Anime.find({})
+      .sort({ title: 1 })
+      .skip(skip)
+      .limit(limit)
+      .select('_id title slug episodeCount lastScrapedAt')
+      .lean();
+
+    const total = await Anime.countDocuments();
+
+    res.json({
+      success: true,
+      data: anime,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (e) { next(e); }
+}
+
 // Search or create anime + preload episodes
 async function searchOrCreateAnime(req, res, next) {
   try {
@@ -48,4 +77,4 @@ async function getEpisodes(req, res, next) {
   } catch (e) { next(e); }
 }
 
-module.exports = { searchOrCreateAnime, getEpisodes };
+module.exports = { listAllAnime, searchOrCreateAnime, getEpisodes };

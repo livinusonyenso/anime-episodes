@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Backend API for anime episode metadata (canon/filler/mixed) with scraping cache, auth, rate-limiting, and watch tracking.",
   "main": "server.js",
-  "type": "commonjs",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",

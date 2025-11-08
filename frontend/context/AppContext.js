@@ -69,11 +69,14 @@ export function AppProvider({ children }) {
     request('POST', '/api/auth/reset-password', { email, token, newPassword });
 
   // ANIME
+  const listAllAnime = async (page = 1, limit = 50) =>
+    request('GET', `/api/anime?page=${page}&limit=${limit}`);
+
   const searchAnime = async (query) =>
     request('GET', `/api/anime?q=${encodeURIComponent(query)}`);
 
   const getEpisodes = async (animeId) =>
-    request('GET', `/api/anime/${animeId}/episodes`);
+    request('GET', `/api/anime/${animeId}/episodes`, {}, !!token);
 
   // WATCH TOGGLE
   const setEpisodeWatched = async (episodeId, watched) =>
@@ -88,6 +91,7 @@ export function AppProvider({ children }) {
     logout,
     requestPasswordReset,
     resetPassword,
+    listAllAnime,
     searchAnime,
     getEpisodes,
     setEpisodeWatched,

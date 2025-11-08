@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useApp } from '../../context/AppContext';
 
 export default function LoginPage() {
@@ -35,6 +36,11 @@ export default function LoginPage() {
         <button className="w-full px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-600 text-white" disabled={loading}>
           {loading ? 'Please wait...' : 'Login'}
         </button>
+        <div className="text-center">
+          <Link href="/reset-password" className="text-sm text-emerald-400 hover:underline">
+            Forgot password?
+          </Link>
+        </div>
       </form>
     </div>
   );

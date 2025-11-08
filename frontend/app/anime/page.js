@@ -21,16 +21,8 @@ export default function AnimeDetailPage() {
       try {
         setLoading(true);
         const res = await getEpisodes(id);
-        let eps = res.data;
-
-        if (user?.watchedEpisodes) {
-          eps = eps.map(ep => ({
-            ...ep,
-            __watched: user.watchedEpisodes.includes(ep._id)
-          }));
-        }
-
-        setEpisodes(eps);
+        // Backend already includes __watched if user is logged in
+        setEpisodes(res.data);
       } catch (err) {
         setError(err.message);
       } finally {

@@ -11,10 +11,16 @@ const app = express();
 
 // Security & parsing
 app.use(helmet());
-app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
-  credentials: false,
-}));
+app.use(
+  cors({
+    origin: [
+      process.env.CLIENT_URL,
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ].filter(Boolean),
+    credentials: false,
+  })
+);
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
@@ -22,11 +28,11 @@ app.use(morgan('dev'));
 app.use('/api', apiLimiter);
 
 // Health
-app.get('/health', (req, res) => res.json({ ok:true, ts: Date.now() }));
+app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: "Server is running ✅",
+    message: 'Server is running ✅',
     timestamp: Date.now(),
   });
 });
@@ -43,7 +49,14 @@ app.use(errorHandler);
 // Boot
 const PORT = process.env.PORT || 5000;
 connectDB(process.env.MONGO_URI)
-  .then(() => app.listen(PORT, () => console.log(`🚀 API on http://localhost:${PORT}`)))
-  .catch((e) => { console.error('Mongo error:', e?.message); process.exit(1); });
+  .then(() =>
+    app.listen(PORT, () =>
+      console.log(`🚀 API running on http://localhost:${PORT}`)
+    )
+  )
+  .catch((e) => {
+    console.error('Mongo error:', e?.message);
+    process.exit(1);
+  });
 
 module.exports = app;

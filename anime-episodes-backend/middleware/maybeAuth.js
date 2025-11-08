@@ -8,7 +8,7 @@ async function maybeAuth(req, res, next) {
     if (!token) return next();
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(payload.id).lean();
+    const user = await User.findById(payload.id).select('watchedEpisodes').lean();
     if (user) req.user = user;
   } catch (e) {
     // Do nothing - user stays unauthenticated
