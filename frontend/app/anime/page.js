@@ -1,15 +1,15 @@
-// app/anime/page.js
 "use client";
 export const dynamic = "force-dynamic";
 
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // ✅ import router
 import { useApp } from "../../context/AppContext";
 import toast from "react-hot-toast";
-import { CheckCircleIcon, CircleStackIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, CircleStackIcon, ArrowLeftIcon } from "@heroicons/react/24/solid"; // ✅ icon for back button
 
 function AnimeDetailPage() {
+  const router = useRouter(); // ✅ initialize router
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const { user, getEpisodes, setEpisodeWatched } = useApp();
@@ -52,7 +52,17 @@ function AnimeDetailPage() {
 
   return (
     <div className="space-y-6 p-4 max-w-2xl mx-auto">
+      {/* ✅ Back button */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition"
+      >
+        <ArrowLeftIcon className="w-5 h-5" />
+        <span>Back</span>
+      </button>
+
       <h1 className="text-2xl font-semibold">Episodes</h1>
+
       {loading && <p>Loading episodes…</p>}
       {error && <p className="text-red-500">{error}</p>}
       {!loading && episodes.length === 0 && <p>No episodes found.</p>}

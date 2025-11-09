@@ -17,6 +17,7 @@ app.use(
       process.env.CLIENT_URL,
       'http://localhost:3000',
       'http://localhost:3001',
+      'https://anime-episodes.onrender.com/',
     ].filter(Boolean),
     credentials: false,
   })
