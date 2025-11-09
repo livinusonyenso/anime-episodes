@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, useMemo } from 'react';
 const AppCtx = createContext(null);
 
 export function AppProvider({ children }) {
-  const API = process.env.NEXT_PUBLIC_API_BASE || 'https://kazfieldisl.com/anime-episodes/';
+  const API = process.env.NEXT_PUBLIC_API_BASE || 'https://kazfieldisl.com/anime-episodes';
 
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
