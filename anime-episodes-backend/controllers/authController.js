@@ -53,7 +53,7 @@ async function requestPasswordReset(req, res, next) {
     user.resetToken = raw;
     user.resetTokenExp = exp;
     await user.save();
-    const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${raw}&email=${encodeURIComponent(email)}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${raw}&email=${encodeURIComponent(email)}`;
     await sendMail(email, 'Reset your password', `<p>Reset your password:</p><p><a href="${resetLink}">${resetLink}</a></p><p>This link expires in 1 hour.</p>`);
     res.json({ success:true, message:'If an account exists, an email has been sent' });
   } catch (e) { next(e); }

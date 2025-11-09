@@ -8,8 +8,9 @@ const { apiLimiter } = require('./config/rateLimit');
 const { notFound, errorHandler } = require('./middleware/error');
 
 const app = express();
+app.set('trust proxy', 1);
 
-// Security & parsing
+// middleware
 app.use(helmet());
 app.use(
   cors({
@@ -17,47 +18,35 @@ app.use(
       process.env.CLIENT_URL,
       'http://localhost:3000',
       'http://localhost:3001',
-      'https://anime-episodes.onrender.com/',
+      'https://anime-episodes.onrender.com',
     ].filter(Boolean),
-    credentials: false,
   })
 );
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
-// Rate limit for all API routes
-app.use('/api', apiLimiter);
+const basePath =
+  process.env.NODE_ENV === 'production' ? '/anime-episodes' : '';
 
-// Health
-app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Server is running ✅',
-    timestamp: Date.now(),
-  });
-});
-
-// Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/anime', require('./routes/animeRoutes'));
-app.use('/api/episodes', require('./routes/episodeRoutes'));
-
-// 404 + error
+app.use(`${basePath}/api`, apiLimiter);
+app.get(`${basePath}/health`, (req, res) => res.json({ ok: true }));
+app.use(`${basePath}/api/auth`, require('./routes/authRoutes'));
+app.use(`${basePath}/api/anime`, require('./routes/animeRoutes'));
+app.use(`${basePath}/api/episodes`, require('./routes/episodeRoutes'));
 app.use(notFound);
 app.use(errorHandler);
 
-// Boot
+// ---------------- Boot section ----------------
 const PORT = process.env.PORT || 5000;
+
+// start server immediately
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server started on port ${PORT}`);
+});
+
+// connect to Mongo separately (does NOT start a new server)
 connectDB(process.env.MONGO_URI)
-  .then(() =>
-    app.listen(PORT, () =>
-      console.log(`🚀 API running on http://localhost:${PORT}`)
-    )
-  )
-  .catch((e) => {
-    console.error('Mongo error:', e?.message);
-    process.exit(1);
-  });
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.error('❌ Mongo connection error:', err.message));
 
 module.exports = app;
